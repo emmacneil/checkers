@@ -8,6 +8,7 @@
 #define BOARD_SCENE_HPP
 
 #include "scene.hpp"
+#include "board_state.hpp"
 
 class board_scene : public scene
 {
@@ -17,6 +18,8 @@ class board_scene : public scene
     void render();
     void update();
     void handle_input();
+  private :
+    board_state * m_board_state;
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "game.hpp"
+#include "board_scene.hpp"
 //#include "opening_scene.hpp"
 #ifdef SDL_GRAPHICS
 #include "sdl_graphics.hpp"
@@ -40,15 +41,14 @@ bool game::init()
     std::cout << "Could not initialize graphics subsystem." << std::endl;
     return false;
   }
-  /*
-  opening_scene * s = new opening_scene();
+  
+  board_scene * s = new board_scene();
   if (s == nullptr)
   {
-    printf("Could not create opening scene.\n");
+    printf("Could not create board scene.\n");
     return false;
   }
   push_scene(s);
-  */
   
   return true;
 }
