@@ -14,8 +14,6 @@
 class graphics
 {
   public:
-    //virtual graphics(){};
-    //virtual ~graphics(){};
     virtual bool init() = 0;
     virtual void quit() = 0;
 };

@@ -52,8 +52,8 @@ bool vulkan_graphics::init_glfw()
   }
   
   // Create GLFW window
-  _window = glfwCreateWindow(WIDTH, HEIGHT, "Checkers", nullptr, nullptr);
-  if (_window == nullptr)
+  window = glfwCreateWindow(WIDTH, HEIGHT, "Checkers", nullptr, nullptr);
+  if (window == nullptr)
   {
     glfwGetError(&err);
     std::cout << "Could not create GLFW window." << std::endl;
@@ -102,7 +102,7 @@ bool vulkan_graphics::init_vulkan()
   create_info.ppEnabledExtensionNames = glfw_extensions;
   create_info.enabledLayerCount = 0; // Number of global validation layers (??)
 
-  VkResult result = vkCreateInstance(&create_info, nullptr, &_vk_instance);
+  VkResult result = vkCreateInstance(&create_info, nullptr, &vk_instance);
   if (result != VK_SUCCESS)
     std::cout << "Could not create Vulkan instance." << std::endl << "VK Error: ";
   switch (result)
@@ -120,6 +120,34 @@ bool vulkan_graphics::init_vulkan()
     case VK_ERROR_INCOMPATIBLE_DRIVER: 
       std::cout << "Incompatible driver."   << std::endl; return false;
   }
+
+  // Count physical devices
+  uint32_t device_count = 0;
+  vkEnumeratePhysicalDevices(vk_instance, &device_count, nullptr);
+  std::vector<VkPhysicalDevice> devices(device_count);
+  vkEnumeratePhysicalDevices(vk_instance, &device_count, devices.data());
+  if (device_count == 0)
+  {
+    std::cout << "Failed to find GPU with Vulkan support." << std::endl;
+    return false;
+  }
+
+  // Output info on physical devices
+  std::cout << "Found " << device_count << " device(s): " << std::endl;
+  for (auto d : devices)
+  {
+    VkPhysicalDeviceProperties p;
+    vkGetPhysicalDeviceProperties(d, &p);
+    std::cout << p.deviceName << std::endl;
+  }
+
+  // Just pick the first physical device.
+  physical_device = devices[0];
+  std::cout << "Selected device: ";
+  VkPhysicalDeviceProperties p;
+  vkGetPhysicalDeviceProperties(physical_device, &p);
+  std::cout << p.deviceName << std::endl;
+
   return true;
 }
 
@@ -127,9 +155,9 @@ bool vulkan_graphics::init_vulkan()
 
 void vulkan_graphics::quit()
 {
-  if (_vk_instance != nullptr)
-    vkDestroyInstance(_vk_instance, nullptr);
-  if (_window != nullptr)
-    glfwDestroyWindow(_window);
+  if (vk_instance != nullptr)
+    vkDestroyInstance(vk_instance, nullptr);
+  if (window != nullptr)
+    glfwDestroyWindow(window);
   glfwTerminate();
 }

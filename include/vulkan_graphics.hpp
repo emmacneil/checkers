@@ -27,9 +27,9 @@ class vulkan_graphics : public graphics
     bool init_glfw();
     bool init_vulkan();
 
-    GLFWwindow * _window;
-    VkInstance _vk_instance;
-    VkPhysicalDevice _device = VK_NULL_HANDLE;
+    GLFWwindow * window;
+    VkInstance vk_instance;
+    VkPhysicalDevice physical_device = VK_NULL_HANDLE;
 };
 
 #endif
